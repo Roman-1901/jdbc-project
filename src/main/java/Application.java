@@ -9,48 +9,24 @@ import java.util.List;
 
 public class Application {
     public static void main(String[] args) throws SQLException {
-        final String user = "postgres";
-        final String password = "qwer";
-        final String url = "jdbc:postgresql://localhost:5432/skypro";
-        int id = 11;
+        EmployeeDAO employeeDAO = new EmployeeDAOImpl();
 
-        // ЗАДАНИЕ 1
-//        try (Connection connection = DriverManager.getConnection(url, user, password);
-//             PreparedStatement statement = connection.prepareStatement("SELECT e.*, c.city_name FROM employee e JOIN city c ON e.city_id = c.city_id WHERE id = (?)")
-//        ) {
-//            statement.setInt(1, id);
-//            ResultSet resultSet = statement.executeQuery();
-//            while (resultSet.next()) {
-//                System.out.print("id: " + resultSet.getInt("id") + "; first_name: " + resultSet.getString("first_name") + "; last_name: " + resultSet.getString("last_name") + "; " +
-//                        "gender: " + resultSet.getString("gender") + "; age: " +resultSet.getInt("age") + "; city: " + resultSet.getString("city_name"));
-//                System.out.println();
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        //Создание
+        Employee empNew = new Employee(1, "Ivan", "Ivanov", "Male", 25, 3);
+        employeeDAO.create(empNew);
 
+        //Обновление
+        Employee empUpdate = employeeDAO.findById(6);
+        empUpdate.setFirst_name("Petr");
+        empUpdate.setLast_name("Petrov");
+        employeeDAO.update(empUpdate);
 
-        //ЗАДАНИЕ 2
-        Connection connection = DriverManager.getConnection(url, user, password);
-        EmployeeDAOImpl employeeDAO = new EmployeeDAOImpl(connection);
+        //Удаление
+        Employee empDelete = employeeDAO.findById(12);
+        employeeDAO.delete(empDelete);
 
-        //Создание(добавление) сущности Employee в таблицу
-        Employee employee = new Employee(10, "Roman", "Nasibullin", "Male", 34, 1);
-        employeeDAO.create(employee);
-
-        //Получение конкретного объекта Employee по id
-       System.out.println(employeeDAO.findById(5));
-
-        //Получение списка всех объектов Employee из базы
-        List<Employee> employees = new ArrayList<>(employeeDAO.findAll());
-        for(Employee empl : employees) {
-            System.out.println(empl);
-        }
-
-        //Изменение конкретного объекта Employee в базе по id
-        employeeDAO.updateById(11, "Svetlana", "Ignateva", "Female", 32, 2);
-
-        //Удаление конкретного объекта Employee из базы по id
-        employeeDAO.deleteById(10);
+        //Вывод всего списка
+        List<Employee> employees = employeeDAO.findAll();
+        employees.stream().forEach(System.out::println);
     }
 }
