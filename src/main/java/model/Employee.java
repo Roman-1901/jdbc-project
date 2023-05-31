@@ -3,6 +3,7 @@ package model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -19,6 +20,19 @@ public class Employee {
     private String last_name;
     private String gender;
     private int age;
-    private int city_id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "city_id", nullable=false, insertable = false, updatable = false)
+    private City city;
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", age=" + age +
+                ", city=" + city +
+                '}';
+    }
 }
